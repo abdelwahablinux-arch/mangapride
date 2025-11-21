@@ -1162,18 +1162,13 @@
     </div>
 </div>
 <script>
- // Fixed API Configuration
-const API_BASE_URL = (() => {
-  // If we're on localhost, use the server IP
-  if (window.location.hostname === 'localhost' || 
-      window.location.hostname === '127.0.0.1') {
-    return 'http://192.168.18.226:8080';
-  }
-  // Otherwise use current host with port 8080
-  return `${window.location.protocol}//${window.location.hostname}:8080`;
-})();
+  // API Configuration - DYNAMIC
+const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://192.168.18.226:8080'
+  : `${window.location.protocol}//${window.location.hostname}:3000`;
 
 console.log('API Base URL:', API_BASE_URL);
+
 // Global variables
 let cart = JSON.parse(localStorage.getItem('mangaPrideCart')) || [];
 let allProducts = [];
@@ -1356,23 +1351,9 @@ function formatPrice(price) {
 async function loadProductsFromAPI() {
     try {
         showLoadingState();
-        const apiUrl = `${API_BASE_URL}/api/products`;
-        console.log('Fetching from:', apiUrl);
-        
-        const response = await fetch(apiUrl, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            mode: 'cors'
-        });
-        
-        console.log('Response status:', response.status);
-        console.log('Response headers:', response.headers);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
+        console.log('Fetching from:', `${API_BASE_URL}/api/products`);
+        const response = await fetch(`${API_BASE_URL}/api/products`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         
         const products = await response.json();
         console.log('Loaded products from API:', products);
@@ -1386,34 +1367,9 @@ async function loadProductsFromAPI() {
         return products;
     } catch (error) {
         console.error('Error loading products:', error);
-        console.error('Error details:', {
-            message: error.message,
-            name: error.name,
-            stack: error.stack
-        });
-        
-        // Test if server is reachable
-        testServerConnection();
-        
-        showAlert('Error loading products from server: ' + error.message, 'error');
+        showAlert('Error loading products from server', 'error');
         showErrorState();
         return [];
-    }
-}
-
-// Add this function to test server connectivity
-async function testServerConnection() {
-    try {
-        console.log('Testing server connectivity...');
-        const healthResponse = await fetch(`${API_BASE_URL}/api/health`);
-        console.log('Server health check:', healthResponse.status);
-        
-        if (healthResponse.ok) {
-            const healthData = await healthResponse.json();
-            console.log('Server health data:', healthData);
-        }
-    } catch (healthError) {
-        console.error('Server health check failed:', healthError);
     }
 }
 
