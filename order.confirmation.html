@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation - Manga Pride</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --deep-purple: #4A306D;
+            --vibrant-pink: #FF6B9D;
+            --electric-blue: #2EC4B6;
+            --cedar-green: #007A33;
+            --white: #FFFFFF;
+            --charcoal: #1A1A1A;
+            --light-gray: #F5F5F5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .confirmation-container {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--cedar-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            animation: bounce 0.6s ease-in-out;
+        }
+
+        .success-icon i {
+            color: white;
+            font-size: 2.5rem;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-10px);}
+            60% {transform: translateY(-5px);}
+        }
+
+        h1 {
+            color: var(--deep-purple);
+            margin-bottom: 1rem;
+            font-size: 2.2rem;
+        }
+
+        .order-details {
+            background: var(--light-gray);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            text-align: left;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--white);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            margin: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--vibrant-pink);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: #ff4d8a;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--deep-purple);
+            color: var(--deep-purple);
+        }
+
+        .btn-outline:hover {
+            background: var(--deep-purple);
+            color: var(--white);
+        }
+
+        .whatsapp-btn {
+            background: #25D366;
+            color: white;
+            border: none;
+        }
+
+        .whatsapp-btn:hover {
+            background: #128C7E;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="confirmation-container">
+        <div class="success-icon">
+            <i class="fas fa-check"></i>
+        </div>
+        
+        <h1>Order Confirmed! 🎉</h1>
+        <p>Thank you for your purchase! Your order has been received and is being processed.</p>
+        
+        <div class="order-details" id="orderDetails">
+            <!-- Order details will be loaded here -->
+        </div>
+
+        <p style="margin-bottom: 2rem; color: #666;">
+            You will receive a confirmation call within 24 hours.<br>
+            <strong>Order ID: <span id="orderId"></span></strong>
+        </p>
+
+        <div>
+            <a href="index.html" class="btn btn-primary">
+                <i class="fas fa-home"></i> Back to Home
+            </a>
+            <button class="btn whatsapp-btn" onclick="shareOnWhatsApp()">
+                <i class="fab fa-whatsapp"></i> Share on WhatsApp
+            </button>
+            <a href="admin.html" class="btn btn-outline">
+                <i class="fas fa-shopping-bag"></i> Track Order
+            </a>
+        </div>
+        <p><strong>Order ID:</strong> <span id="order-id"></span></p>
+<p><strong>Date:</strong> <span id="order-date"></span></p>
+<p><strong>Total:</strong> <span id="order-total"></span></p>
+
+    </div>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const data = JSON.parse(localStorage.getItem("lastOrder"));
+
+        if (!data) {
+            // If user opened the page manually
+            window.location.href = "index.html";
+            return;
+        }
+
+        document.getElementById("order-id").textContent = data.orderId;
+        document.getElementById("order-total").textContent = 
+            new Intl.NumberFormat('en-LB').format(data.total) + " LBP";
+        document.getElementById("order-date").textContent = 
+            new Date(data.date).toLocaleString();
+
+        // Optionally clear after loading
+        localStorage.removeItem("lastOrder");
+    });
+</script>
+
+    <script>
+        // Get order data from URL parameters or localStorage
+        function loadOrderDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderId = urlParams.get('orderId');
+            const total = urlParams.get('total');
+            
+            if (orderId) {
+                document.getElementById('orderId').textContent = orderId;
+                
+                const orderDetails = document.getElementById('orderDetails');
+                orderDetails.innerHTML = `
+                    <div class="detail-row">
+                        <span>Order ID:</span>
+                        <strong>${orderId}</strong>
+                    </div>
+                    <div class="detail-row">
+                        <span>Total Amount:</span>
+                        <strong>${formatPrice(total)} LBP</strong>
+                    </div>
+                    <div class="detail-row">
+                        <span>Status:</span>
+                        <strong style="color: var(--cedar-green);">Confirmed</strong>
+                    </div>
+                    <div class="detail-row">
+                        <span>Payment Method:</span>
+                        <strong>Cash on Delivery</strong>
+                    </div>
+                `;
+            }
+        }
+
+        function formatPrice(price) {
+            return new Intl.NumberFormat('en-LB').format(price);
+        }
+
+        function shareOnWhatsApp() {
+            const orderId = document.getElementById('orderId').textContent;
+            const message = `🎉 I just placed an order on Manga Pride! Order ID: ${orderId}. Check out their awesome anime collection!`;
+            const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
+        }
+
+        // Load order details when page loads
+        document.addEventListener('DOMContentLoaded', loadOrderDetails);
+    </script>
+</body>
+</html>
