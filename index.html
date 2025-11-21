@@ -1162,13 +1162,18 @@
     </div>
 </div>
 <script>
-  // API Configuration - DYNAMIC
-const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-  ? 'http://192.168.18.226:8080'
-  : `${window.location.protocol}//${window.location.hostname}:3000`;
+ // Fixed API Configuration
+const API_BASE_URL = (() => {
+  // If we're on localhost, use the server IP
+  if (window.location.hostname === 'localhost' || 
+      window.location.hostname === '127.0.0.1') {
+    return 'http://192.168.18.226:8080';
+  }
+  // Otherwise use current host with port 8080
+  return `${window.location.protocol}//${window.location.hostname}:8080`;
+})();
 
 console.log('API Base URL:', API_BASE_URL);
-
 // Global variables
 let cart = JSON.parse(localStorage.getItem('mangaPrideCart')) || [];
 let allProducts = [];
