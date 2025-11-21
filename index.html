@@ -1162,20 +1162,26 @@
     </div>
 </div>
 <script>
- // Public API Configuration
+ // GitHub Pages Specific Configuration
 const API_BASE_URL = (() => {
-  // Use relative URL in production, or specify your public domain
-  if (window.location.hostname === 'localhost' || 
-      window.location.hostname === '127.0.0.1') {
-    return 'http://192.168.18.226:8080'; // Local development
-  } else {
-    // For production - use your public IP or domain
-    return `${window.location.protocol}//${window.location.hostname}:8080`;
-    // OR specify your public IP directly:
-    // return 'http://YOUR_PUBLIC_IP:8080';
+  // Replace 'YOUR_PUBLIC_IP' with your actual public IP address
+  const PUBLIC_IP = 'YOUR_PUBLIC_IP'; // <<< REPLACE THIS WITH YOUR PUBLIC IP
+  
+  // When running on GitHub Pages
+  if (window.location.hostname === 'abdelwahablinux-arch.github.io') {
+    return `https://${PUBLIC_IP}`;
   }
+  // Local development
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return 'http://192.168.18.226:8080';
+  }
+  // Fallback for other cases
+  return `https://${PUBLIC_IP}`;
 })();
+
+console.log('Frontend Environment:', window.location.hostname);
 console.log('API Base URL:', API_BASE_URL);
+
 // Global variables
 let cart = JSON.parse(localStorage.getItem('mangaPrideCart')) || [];
 let allProducts = [];
@@ -1354,12 +1360,12 @@ function formatPrice(price) {
     return new Intl.NumberFormat('en-LB').format(price);
 }
 
-// Load products from API
+// Enhanced error handling for API calls
 async function loadProductsFromAPI() {
     try {
         showLoadingState();
         const apiUrl = `${API_BASE_URL}/api/products`;
-        console.log('Fetching from:', apiUrl);
+        console.log('🌐 Fetching from:', apiUrl);
         
         const response = await fetch(apiUrl, {
             method: 'GET',
@@ -1369,15 +1375,14 @@ async function loadProductsFromAPI() {
             mode: 'cors'
         });
         
-        console.log('Response status:', response.status);
-        console.log('Response headers:', response.headers);
+        console.log('📡 Response status:', response.status);
         
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
         
         const products = await response.json();
-        console.log('Loaded products from API:', products);
+        console.log('✅ Loaded products from API:', products.length, 'products');
         allProducts = products;
         
         loadHotPicks();
@@ -1387,35 +1392,37 @@ async function loadProductsFromAPI() {
         
         return products;
     } catch (error) {
-        console.error('Error loading products:', error);
-        console.error('Error details:', {
-            message: error.message,
-            name: error.name,
-            stack: error.stack
-        });
+        console.error('❌ Error loading products:', error);
         
-        // Test if server is reachable
-        testServerConnection();
+        // Enhanced error diagnostics
+        await testServerConnection();
         
-        showAlert('Error loading products from server: ' + error.message, 'error');
+        showAlert('Cannot connect to server. Please check if the server is running.', 'error');
         showErrorState();
         return [];
     }
 }
 
-// Add this function to test server connectivity
+// Enhanced server connectivity test
 async function testServerConnection() {
     try {
-        console.log('Testing server connectivity...');
+        console.log('🔍 Testing server connectivity...');
         const healthResponse = await fetch(`${API_BASE_URL}/api/health`);
-        console.log('Server health check:', healthResponse.status);
+        console.log('🏥 Server health check:', healthResponse.status);
         
         if (healthResponse.ok) {
             const healthData = await healthResponse.json();
-            console.log('Server health data:', healthData);
+            console.log('💚 Server health data:', healthData);
+        } else {
+            console.error('💔 Server health check failed:', healthResponse.status);
         }
     } catch (healthError) {
-        console.error('Server health check failed:', healthError);
+        console.error('🔴 Server health check failed completely:', healthError.message);
+        console.log('💡 Tips:');
+        console.log('   - Make sure server is running');
+        console.log('   - Check if port 443 is forwarded');
+        console.log('   - Verify SSL certificates exist');
+        console.log('   - Check firewall settings');
     }
 }
 
@@ -1424,7 +1431,7 @@ function showLoadingState() {
     grids.forEach(gridId => {
         const grid = document.getElementById(gridId);
         if (grid) {
-            grid.innerHTML = '<div class="loading">Loading products</div>';
+            grid.innerHTML = '<div class="loading">Loading products from server...</div>';
         }
     });
 }
@@ -1437,10 +1444,13 @@ function showErrorState() {
             grid.innerHTML = `
                 <div style="grid-column: 1 / -1; text-align: center; padding: 2rem;">
                     <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: var(--medium-gray); margin-bottom: 1rem;"></i>
-                    <h3 style="color: var(--charcoal); margin-bottom: 1rem;">Failed to load products</h3>
-                    <p style="color: var(--medium-gray);">Please try refreshing the page</p>
+                    <h3 style="color: var(--charcoal); margin-bottom: 1rem;">Connection Error</h3>
+                    <p style="color: var(--medium-gray); margin-bottom: 1rem;">Cannot connect to the server</p>
+                    <p style="color: var(--medium-gray); font-size: 0.9rem; margin-bottom: 1.5rem;">
+                        Make sure the backend server is running and accessible
+                    </p>
                     <button class="btn btn-primary" onclick="loadProductsFromAPI()" style="margin-top: 1rem;">
-                        Try Again
+                        <i class="fas fa-redo"></i> Try Again
                     </button>
                 </div>
             `;
