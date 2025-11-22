@@ -1163,11 +1163,20 @@
 </div>
 <script>
 const API_BASE_URL = (() => {
+  // When running on GitHub Pages (production)
   if (window.location.hostname === 'abdelwahablinux-arch.github.io') {
-    return 'http://94.187.0.214:8080'; // Use HTTP for now
+    return 'http://94.187.0.214:8080'; // HTTP for GitHub Pages
   }
-  return 'http://192.168.18.226:8080';
+  // Local development
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return 'http://192.168.18.226:8080'; // HTTP for local
+  }
+  // Fallback for other cases
+  return 'http://94.187.0.214:8080';
 })();
+
+console.log('🌐 Frontend Environment:', window.location.hostname);
+console.log('🔗 API Base URL:', API_BASE_URL);
 
 // Global variables
 let cart = JSON.parse(localStorage.getItem('mangaPrideCart')) || [];
