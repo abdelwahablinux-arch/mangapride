@@ -1163,24 +1163,25 @@
 </div>
 <script>
  // GitHub Pages Specific Configuration
+// GitHub Pages Specific Configuration
 const API_BASE_URL = (() => {
-  // Replace 'YOUR_PUBLIC_IP' with your actual public IP address
-  const PUBLIC_IP = 'YOUR_PUBLIC_IP'; // <<< REPLACE THIS WITH YOUR PUBLIC IP
+  // ⚠️ REPLACE THIS WITH YOUR ACTUAL PUBLIC IP ⚠️
+  const PUBLIC_IP = '94.187.0.214'; // Get from: curl ifconfig.me
   
-  // When running on GitHub Pages
+  // When running on GitHub Pages (production)
   if (window.location.hostname === 'abdelwahablinux-arch.github.io') {
-    return `https://${PUBLIC_IP}`;
+    return `https://${PUBLIC_IP}`; // Uses port 443 (HTTPS)
   }
   // Local development
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    return 'http://192.168.18.226:8080';
+    return 'http://192.168.18.226:8080'; // Uses port 8080 (HTTP)
   }
   // Fallback for other cases
   return `https://${PUBLIC_IP}`;
 })();
 
-console.log('Frontend Environment:', window.location.hostname);
-console.log('API Base URL:', API_BASE_URL);
+console.log('🌐 Frontend Environment:', window.location.hostname);
+console.log('🔗 API Base URL:', API_BASE_URL);
 
 // Global variables
 let cart = JSON.parse(localStorage.getItem('mangaPrideCart')) || [];
@@ -1188,6 +1189,80 @@ let allProducts = [];
 
 // Free shipping configuration
 const FREE_SHIPPING_THRESHOLD = 10000000;
+
+// [KEEP ALL YOUR EXISTING FUNCTIONS EXACTLY AS THEY ARE]
+// updateFreeShippingProgress, updateCartCount, addToCart, etc.
+// All your existing cart and product functions remain unchanged
+
+// Enhanced error handling for API calls
+async function loadProductsFromAPI() {
+    try {
+        showLoadingState();
+        const apiUrl = `${API_BASE_URL}/api/products`;
+        console.log('🌐 Fetching from:', apiUrl);
+        
+        const response = await fetch(apiUrl, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            mode: 'cors'
+        });
+        
+        console.log('📡 Response status:', response.status);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const products = await response.json();
+        console.log('✅ Loaded products from API:', products.length, 'products');
+        allProducts = products;
+        
+        loadHotPicks();
+        loadFeaturedProducts();
+        loadNewReleases();
+        loadBestsellers();
+        
+        return products;
+    } catch (error) {
+        console.error('❌ Error loading products:', error);
+        
+        // Enhanced error diagnostics
+        await testServerConnection();
+        
+        showAlert('Cannot connect to server. Please check if the server is running.', 'error');
+        showErrorState();
+        return [];
+    }
+}
+
+// Enhanced server connectivity test
+async function testServerConnection() {
+    try {
+        console.log('🔍 Testing server connectivity...');
+        const healthResponse = await fetch(`${API_BASE_URL}/api/health`);
+        console.log('🏥 Server health check:', healthResponse.status);
+        
+        if (healthResponse.ok) {
+            const healthData = await healthResponse.json();
+            console.log('💚 Server health data:', healthData);
+        } else {
+            console.error('💔 Server health check failed:', healthResponse.status);
+        }
+    } catch (healthError) {
+        console.error('🔴 Server health check failed completely:', healthError.message);
+        console.log('💡 Tips:');
+        console.log('   - Make sure server is running');
+        console.log('   - Check if port 443 is forwarded');
+        console.log('   - Verify SSL certificates exist');
+        console.log('   - Check firewall settings');
+    }
+}
+
+// [KEEP ALL YOUR OTHER EXISTING FUNCTIONS]
+// showLoadingState, showErrorState, createProductCard, etc.
+// All remaining functions stay exactly as you have them
 
 // Update free shipping progress
 function updateFreeShippingProgress() {
