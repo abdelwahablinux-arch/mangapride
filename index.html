@@ -1162,7 +1162,7 @@
     </div>
 </div>
 <script>
-const API_BASE_URL = 'https://means-bruce-guest-kenneth.trycloudflare.com;
+const API_BASE_URL = "https://scheduling-producer-led-predictions.trycloudflare.com";
 
 // Global variables
 let cart = JSON.parse(localStorage.getItem('mangaPrideCart')) || [];
@@ -1452,10 +1452,8 @@ async function loadProductsFromAPI() {
     } catch (error) {
         console.error('❌ Error loading products:', error);
         
-        // Enhanced error diagnostics
-        await testServerConnection();
-        
-        showAlert('Cannot connect to server. Please check if the server is running.', 'error');
+        // Show user-friendly error message
+        showAlert('Cannot connect to server. Please try again later.', 'error');
         showErrorState();
         return [];
     }
@@ -1464,26 +1462,35 @@ async function loadProductsFromAPI() {
 // Enhanced server connectivity test
 async function testServerConnection() {
     try {
-        console.log('🔍 Testing server connectivity...');
-        const healthResponse = await fetch(`${API_BASE_URL}/api/health`);
-        console.log('🏥 Server health check:', healthResponse.status);
-        
-        if (healthResponse.ok) {
-            const healthData = await healthResponse.json();
-            console.log('💚 Server health data:', healthData);
-        } else {
-            console.error('💔 Server health check failed:', healthResponse.status);
-        }
-    } catch (healthError) {
-        console.error('🔴 Server health check failed completely:', healthError.message);
-        console.log('💡 Tips:');
-        console.log('   - Make sure server is running');
-        console.log('   - Check if port 443 is forwarded');
-        console.log('   - Verify SSL certificates exist');
-        console.log('   - Check firewall settings');
+        console.log('🔍 Testing server connection...');
+        const response = await fetch(`${API_BASE_URL}/api/health`);
+        const data = await response.json();
+        console.log('✅ Server is reachable:', data);
+        return true;
+    } catch (error) {
+        console.error('❌ Server is not reachable:', error);
+        return false;
     }
 }
 
+// Call this on page load
+testServerConnection();
+
+async function testServerConnection() {
+    try {
+        console.log('🔍 Testing server connection...');
+        const response = await fetch(`${API_BASE_URL}/api/health`);
+        const data = await response.json();
+        console.log('✅ Server is reachable:', data);
+        return true;
+    } catch (error) {
+        console.error('❌ Server is not reachable:', error);
+        return false;
+    }
+}
+
+// Call this on page load
+testServerConnection();
 function showLoadingState() {
     const grids = ['hot-picks-grid', 'featured-grid', 'new-releases-grid', 'bestsellers-grid'];
     grids.forEach(gridId => {
