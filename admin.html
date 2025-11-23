@@ -1194,9 +1194,11 @@
     </div>
 </div>
     <script>
-    // Orders Management - DEBUG VERSION
+        const API_BASE_URL = "https://east-spray-friendly-note.trycloudflare.com";
+
 // Orders Management - DEBUG VERSION
 let allOrders = [];
+
 // Render orders table
 function renderOrdersTable(orders, containerId, isHistory = false) {
     const container = document.getElementById(containerId);
@@ -1291,7 +1293,7 @@ async function completeOrder(orderId) {
     if (!confirm('Mark this order as completed?')) return;
 
     try {
-        const response = await fetch(`/api/orders/${orderId}/status`, {
+        const response = await fetch(`${API_BASE_URL}/api/orders/${orderId}/status`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -1321,7 +1323,7 @@ async function deleteOrder(orderId) {
     }
 
     try {
-        const response = await fetch(`/api/orders/${orderId}`, {
+        const response = await fetch(`${API_BASE_URL}/api/orders/${orderId}`, {
             method: 'DELETE'
         });
 
@@ -1354,7 +1356,7 @@ function formatOrderDate(dateString) {
         minute: '2-digit'
     });
 }
-// Load orders with better error handling
+
 // Load orders with better error handling and loading states
 async function loadOrders() {
     try {
@@ -1368,7 +1370,7 @@ async function loadOrders() {
         }
         if (containerEl) containerEl.style.display = 'none';
         
-        const response = await fetch('/api/orders?status=pending');
+        const response = await fetch(`${API_BASE_URL}/api/orders?status=pending`);
         console.log('Response status:', response.status);
         
         if (!response.ok) {
@@ -1420,7 +1422,7 @@ async function loadOrdersHistory() {
         }
         if (containerEl) containerEl.style.display = 'none';
         
-        const response = await fetch('/api/orders?status=completed');
+        const response = await fetch(`${API_BASE_URL}/api/orders?status=completed`);
         console.log('Orders history response status:', response.status);
         
         if (!response.ok) {
@@ -1461,7 +1463,7 @@ async function loadOrdersHistory() {
 async function testOrdersAPI() {
     try {
         console.log('Testing orders API...');
-        const response = await fetch('/api/orders');
+        const response = await fetch(`${API_BASE_URL}/api/orders`);
         console.log('API Test - Status:', response.status);
         console.log('API Test - OK:', response.ok);
         
@@ -1525,8 +1527,9 @@ function showSection(sectionName) {
     // Track current section for reloading
     window.currentSection = sectionName;
 }
-        // API Base URL
-const base = window.location.origin;
+
+// API Base URL - Remove duplicate declaration
+// const base = window.location.origin; // Remove this duplicate
 
 // Global variables
 let currentEditingId = null;
@@ -1585,36 +1588,6 @@ function showAlert(message, type = 'success') {
     }, 5000);
 }
 
-// Show/hide sections
-function showSection(sectionName) {
-    // Hide all sections
-    document.querySelectorAll('.content-section').forEach(section => {
-        section.classList.remove('active');
-    });
-    
-    // Show selected section
-    const targetSection = document.getElementById(sectionName + '-section');
-    if (targetSection) {
-        targetSection.classList.add('active');
-    }
-    
-    // Update menu items
-    document.querySelectorAll('.menu-item').forEach(item => {
-        item.classList.remove('active');
-    });
-    const menuItem = document.querySelector(`.menu-item[data-section="${sectionName}"]`);
-    if (menuItem) {
-        menuItem.classList.add('active');
-    }
-    
-    // Load data if needed
-    if (sectionName === 'products') {
-        loadProducts();
-    } else if (sectionName === 'dashboard') {
-        loadDashboardStats();
-    }
-}
-
 // Load products and update stats
 async function loadProducts() {
     try {
@@ -1624,7 +1597,7 @@ async function loadProducts() {
         if (loadingEl) loadingEl.style.display = 'block';
         if (containerEl) containerEl.style.display = 'none';
         
-        const response = await fetch('/api/products');
+        const response = await fetch(`${API_BASE_URL}/api/products`);
         if (!response.ok) throw new Error('Failed to fetch products');
         
         const products = await response.json();
@@ -1642,7 +1615,7 @@ async function loadProducts() {
 // Load dashboard stats
 async function loadDashboardStats() {
     try {
-        const response = await fetch('/api/products');
+        const response = await fetch(`${API_BASE_URL}/api/products`);
         if (!response.ok) throw new Error('Failed to fetch products');
         
         const products = await response.json();
@@ -1798,7 +1771,7 @@ function cancelEdit() {
 // Update product (for edit mode)
 async function updateProduct(productId, productData) {
     try {
-        const response = await fetch(`/api/products/${productId}`, {
+        const response = await fetch(`${API_BASE_URL}/api/products/${productId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -1824,7 +1797,7 @@ async function updateProduct(productId, productData) {
 // Edit product
 async function editProduct(productId) {
     try {
-        const response = await fetch('/api/products');
+        const response = await fetch(`${API_BASE_URL}/api/products`);
         const products = await response.json();
         const product = products.find(p => p.id === productId);
         
@@ -1894,7 +1867,7 @@ async function deleteProduct(productId) {
     }
 
     try {
-        const response = await fetch(`/api/products/${productId}`, {
+        const response = await fetch(`${API_BASE_URL}/api/products/${productId}`, {
             method: 'DELETE'
         });
 
@@ -1970,7 +1943,7 @@ function setupFormSubmission() {
         } else {
             // Add new product
             try {
-                const response = await fetch('/api/products', {
+                const response = await fetch(`${API_BASE_URL}/api/products`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
