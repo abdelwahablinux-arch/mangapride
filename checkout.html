@@ -863,7 +863,7 @@ async function completeOrder() {
         console.log('Sending order to server:', orderData);
         
         // Send order to server
-        const response = await fetch('https://remix-analysis-disco-first.trycloudflare.comapplication/json/api/orders', {
+        const response = await fetch('https://remix-analysis-disco-first.trycloudflare.com/api/orders', {
             method: 'POST',
             headers: {
             'Content-Type': 'application/json',
