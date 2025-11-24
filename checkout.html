@@ -31,6 +31,9 @@
             color: var(--charcoal);
             background-color: var(--white);
             line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         h1, h2, h3, h4, h5, h6 {
@@ -54,6 +57,8 @@
             padding: 1rem 5%;
             max-width: 1400px;
             margin: 0 auto;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .logo {
@@ -61,6 +66,7 @@
             align-items: center;
             gap: 10px;
             cursor: pointer;
+            flex-shrink: 0;
         }
 
         .logo h1 {
@@ -71,6 +77,17 @@
             color: transparent;
         }
 
+        @media (max-width: 480px) {
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+            
+            .nav-container {
+                justify-content: center;
+                text-align: center;
+            }
+        }
+
         /* Main Content */
         .checkout-container {
             max-width: 1200px;
@@ -79,11 +96,25 @@
             display: grid;
             grid-template-columns: 1fr 400px;
             gap: 2rem;
+            flex: 1;
+        }
+
+        @media (max-width: 1024px) {
+            .checkout-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .order-summary {
+                order: -1;
+                position: static;
+            }
         }
 
         @media (max-width: 768px) {
             .checkout-container {
-                grid-template-columns: 1fr;
+                margin: 1rem auto;
+                gap: 1rem;
             }
         }
 
@@ -92,7 +123,8 @@
             display: flex;
             justify-content: center;
             margin-bottom: 2rem;
-            gap: 2rem;
+            gap: 1rem;
+            flex-wrap: wrap;
         }
 
         .step {
@@ -100,6 +132,7 @@
             align-items: center;
             gap: 0.5rem;
             color: var(--medium-gray);
+            flex-shrink: 0;
         }
 
         .step.active {
@@ -116,19 +149,44 @@
             align-items: center;
             justify-content: center;
             font-weight: 600;
+            font-size: 0.9rem;
         }
 
         .step.active .step-number {
             background: var(--deep-purple);
         }
 
+        @media (max-width: 480px) {
+            .checkout-steps {
+                gap: 0.5rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .step {
+                font-size: 0.9rem;
+            }
+            
+            .step-number {
+                width: 25px;
+                height: 25px;
+                font-size: 0.8rem;
+            }
+        }
+
         /* Checkout Sections */
         .checkout-section {
             background: var(--white);
             border-radius: 10px;
-            padding: 2rem;
+            padding: 1.5rem;
             margin-bottom: 1.5rem;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 480px) {
+            .checkout-section {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
         }
 
         .section-title {
@@ -137,6 +195,13 @@
             color: var(--deep-purple);
             border-bottom: 2px solid var(--light-gray);
             padding-bottom: 0.5rem;
+        }
+
+        @media (max-width: 480px) {
+            .section-title {
+                font-size: 1.1rem;
+                margin-bottom: 1rem;
+            }
         }
 
         /* Form Styles */
@@ -153,6 +218,11 @@
         @media (max-width: 480px) {
             .form-row {
                 grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+            
+            .form-group {
+                margin-bottom: 1rem;
             }
         }
 
@@ -161,6 +231,7 @@
             margin-bottom: 0.5rem;
             font-weight: 600;
             color: var(--charcoal);
+            font-size: 0.95rem;
         }
 
         .form-control {
@@ -170,11 +241,20 @@
             border-radius: 5px;
             font-size: 1rem;
             transition: border-color 0.3s;
+            min-height: 48px; /* Better touch target */
         }
 
         .form-control:focus {
             outline: none;
             border-color: var(--deep-purple);
+        }
+
+        @media (max-width: 480px) {
+            .form-control {
+                padding: 0.65rem;
+                font-size: 0.95rem;
+                min-height: 44px;
+            }
         }
 
         .checkbox-group {
@@ -187,6 +267,11 @@
         .checkbox-group input {
             width: 18px;
             height: 18px;
+            min-width: 18px;
+        }
+
+        .checkbox-group label {
+            font-size: 0.95rem;
         }
 
         /* Payment Methods */
@@ -200,6 +285,7 @@
         @media (max-width: 480px) {
             .payment-methods {
                 grid-template-columns: 1fr;
+                gap: 0.75rem;
             }
         }
 
@@ -210,6 +296,11 @@
             cursor: pointer;
             transition: all 0.3s;
             text-align: center;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         .payment-method.selected {
@@ -258,9 +349,21 @@
             top: 100px;
             background: var(--white);
             border-radius: 10px;
-            padding: 2rem;
+            padding: 1.5rem;
             box-shadow: 0 2px 20px rgba(0,0,0,0.1);
             height: fit-content;
+        }
+
+        @media (max-width: 1024px) {
+            .order-summary {
+                position: static;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .order-summary {
+                padding: 1rem;
+            }
         }
 
         .order-items {
@@ -285,20 +388,27 @@
             height: 60px;
             object-fit: cover;
             border-radius: 5px;
+            flex-shrink: 0;
         }
 
         .order-item-details {
             flex: 1;
+            min-width: 0; /* Prevents text overflow */
         }
 
         .order-item-name {
             font-weight: 600;
             margin-bottom: 0.25rem;
+            font-size: 0.95rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .order-item-price {
             color: var(--deep-purple);
             font-weight: 700;
+            font-size: 0.9rem;
         }
 
         .order-totals {
@@ -310,6 +420,7 @@
             display: flex;
             justify-content: space-between;
             margin-bottom: 0.5rem;
+            font-size: 0.95rem;
         }
 
         .order-total {
@@ -319,6 +430,21 @@
             border-top: 2px solid var(--light-gray);
             padding-top: 0.5rem;
             margin-top: 0.5rem;
+        }
+
+        @media (max-width: 480px) {
+            .order-item {
+                padding: 0.75rem 0;
+            }
+            
+            .order-item-image {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .order-total {
+                font-size: 1.1rem;
+            }
         }
 
         /* Buttons */
@@ -333,6 +459,11 @@
             text-align: center;
             display: block;
             width: 100%;
+            min-height: 52px; /* Better touch target */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
 
         .btn-primary {
@@ -364,10 +495,27 @@
             text-decoration: none;
             font-weight: 600;
             margin-bottom: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.3s;
         }
 
         .btn-back:hover {
             color: var(--vibrant-pink);
+            background: rgba(74, 48, 109, 0.05);
+        }
+
+        @media (max-width: 480px) {
+            .btn {
+                padding: 0.875rem 1.5rem;
+                font-size: 0.95rem;
+                min-height: 48px;
+            }
+            
+            .btn-back {
+                font-size: 0.9rem;
+                padding: 0.4rem 0.8rem;
+            }
         }
 
         /* Shipping Options */
@@ -382,6 +530,10 @@
             padding: 1rem;
             cursor: pointer;
             transition: all 0.3s;
+            min-height: 70px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .shipping-option.selected {
@@ -392,6 +544,7 @@
         .shipping-option-title {
             font-weight: 600;
             margin-bottom: 0.25rem;
+            font-size: 0.95rem;
         }
 
         .shipping-option-desc {
@@ -415,14 +568,24 @@
         /* Empty Cart State */
         .empty-cart {
             text-align: center;
-            padding: 3rem;
+            padding: 2rem;
             color: var(--medium-gray);
         }
 
         .empty-cart i {
-            font-size: 4rem;
+            font-size: 3rem;
             margin-bottom: 1rem;
             color: var(--medium-gray);
+        }
+
+        @media (max-width: 480px) {
+            .empty-cart {
+                padding: 1.5rem;
+            }
+            
+            .empty-cart i {
+                font-size: 2.5rem;
+            }
         }
 
         /* Footer */
@@ -445,6 +608,17 @@
             border-top: 1px solid rgba(255,255,255,0.1);
             font-size: 0.9rem;
             color: var(--medium-gray);
+        }
+
+        @media (max-width: 480px) {
+            footer {
+                padding: 1.5rem 5%;
+                margin-top: 3rem;
+            }
+            
+            .footer-content p {
+                font-size: 0.9rem;
+            }
         }
     </style>
 </head>
@@ -828,86 +1002,85 @@
         }
 
         // Complete order
-        // Complete order
-async function completeOrder() {
-    if (cart.length === 0) {
-        alert('Your cart is empty!');
-        return;
-    }
+        async function completeOrder() {
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
 
-    if (!validateForm()) {
-        return;
-    }
+            if (!validateForm()) {
+                return;
+            }
 
-    if (selectedPayment === 'credit') {
-        alert('Credit card payments are coming soon! Please select Cash on Delivery.');
-        return;
-    }
+            if (selectedPayment === 'credit') {
+                alert('Credit card payments are coming soon! Please select Cash on Delivery.');
+                return;
+            }
 
-    // Prepare order data
-    const orderData = {
-        orderId: 'MP' + Date.now().toString().slice(-6),
-        items: cart,
-        shipping: getShippingData(),
-        billing: getBillingData(),
-        payment: selectedPayment,
-        shippingMethod: selectedShipping,
-        subtotal: cart.reduce((sum, item) => sum + (parseFloat(item.price) * item.quantity), 0),
-        shippingCost: 0, // Free shipping for now
-        total: cart.reduce((sum, item) => sum + (parseFloat(item.price) * item.quantity), 0),
-        orderDate: new Date().toISOString(),
-        status: 'pending'
-    };
+            // Prepare order data
+            const orderData = {
+                orderId: 'MP' + Date.now().toString().slice(-6),
+                items: cart,
+                shipping: getShippingData(),
+                billing: getBillingData(),
+                payment: selectedPayment,
+                shippingMethod: selectedShipping,
+                subtotal: cart.reduce((sum, item) => sum + (parseFloat(item.price) * item.quantity), 0),
+                shippingCost: 0, // Free shipping for now
+                total: cart.reduce((sum, item) => sum + (parseFloat(item.price) * item.quantity), 0),
+                orderDate: new Date().toISOString(),
+                status: 'pending'
+            };
 
-    try {
-        console.log('Sending order to server:', orderData);
-        
-        // Send order to server
-        const response = await fetch('https://remix-analysis-disco-first.trycloudflare.com/api/orders', {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-            },body: JSON.stringify(orderData)
-        });
+            try {
+                console.log('Sending order to server:', orderData);
+                
+                // Send order to server
+                const response = await fetch('https://environments-comfortable-roland-reserved.trycloudflare.com/api/orders', {
+                    method: 'POST',
+                    headers: {
+                    'Content-Type': 'application/json',
+                    },body: JSON.stringify(orderData)
+                });
 
-        console.log('Response status:', response.status);
-        
-        if (!response.ok) {
-            throw new Error(`Server returned ${response.status}: ${response.statusText}`);
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`Server returned ${response.status}: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                console.log('Server response:', result);
+
+                if (result.success) {
+            // Store data for confirmation page
+            localStorage.setItem('lastOrder', JSON.stringify({
+                orderId: orderData.orderId,
+                total: orderData.total,
+                date: orderData.orderDate
+            }));
+
+            // Clear cart
+            localStorage.removeItem('mangaPrideCart');
+
+            // Redirect to confirmation page
+            window.location.href = 'order.confirmation.html';
         }
-
-        const result = await response.json();
-        console.log('Server response:', result);
-
-        if (result.success) {
-    // Store data for confirmation page
-    localStorage.setItem('lastOrder', JSON.stringify({
-        orderId: orderData.orderId,
-        total: orderData.total,
-        date: orderData.orderDate
-    }));
-
-    // Clear cart
-    localStorage.removeItem('mangaPrideCart');
-
-    // Redirect to confirmation page
-    window.location.href = 'order.confirmation.html';
-}
- else {
-            throw new Error(result.message || 'Unknown error from server');
+         else {
+                    throw new Error(result.message || 'Unknown error from server');
+                }
+            } catch (error) {
+                console.error('Error creating order:', error);
+                
+                if (error.message.includes('404')) {
+                    alert('❌ Orders API not found. Please make sure the server is running with orders routes.\n\nCheck the server console for errors.');
+                } else if (error.message.includes('500')) {
+                    alert('❌ Server error. Please check the server console for details.');
+                } else {
+                    alert('❌ Error creating order: ' + error.message);
+                }
+            }
         }
-    } catch (error) {
-        console.error('Error creating order:', error);
-        
-        if (error.message.includes('404')) {
-            alert('❌ Orders API not found. Please make sure the server is running with orders routes.\n\nCheck the server console for errors.');
-        } else if (error.message.includes('500')) {
-            alert('❌ Server error. Please check the server console for details.');
-        } else {
-            alert('❌ Error creating order: ' + error.message);
-        }
-    }
-}
 
         // Get shipping data from form
         function getShippingData() {
