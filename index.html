@@ -600,12 +600,13 @@
 
         /* Responsive Design */
         @media (max-width: 992px) {
+            /* Remove navigation links and mobile menu button for mobile */
             .nav-links {
                 display: none;
             }
 
             .mobile-menu-btn {
-                display: block;
+                display: none;
             }
 
             .hero h2 {
@@ -930,6 +931,7 @@
                 <h1>Manga Pride</h1>
             </div>
             
+            <!-- Navigation links - will be hidden on mobile -->
             <ul class="nav-links">
                 <li><a href="#" onclick="showHomePage()">Home</a></li>
                 <li><a href="#" data-category="manga">Manga</a></li>
@@ -948,6 +950,7 @@
                 </a>
             </div>
             
+            <!-- Mobile menu button - will be hidden on mobile -->
             <button class="mobile-menu-btn">
                 <i class="fas fa-bars"></i>
             </button>
@@ -959,17 +962,17 @@
         <!-- Hero Section -->
         <section class="hero">
             <div class="hero-content">
-                <h2>Your Lebanese Gateway to the Anime Universe</h2>
-                <p>Manga, Figures, Apparel & More – Delivered Across Lebanon</p>
+                <h2>Welcome to Manga Pride</h2>
+                <p>Your Lebanese nakama for all things anime and manga. Discover exclusive collections, rare figures, and authentic merchandise.</p>
                 
                 <div class="search-container">
-                    <input type="text" id="main-search" placeholder="Search for your favorite anime, manga, or character...">
+                    <input type="text" id="main-search" placeholder="Search for manga, figures, apparel...">
                     <button onclick="performSearch()"><i class="fas fa-search"></i></button>
                 </div>
                 
                 <div class="cta-buttons">
-                    <button class="btn btn-primary" onclick="showTab('featured')">Featured</button>
-                    <button class="btn btn-secondary" onclick="showTab('new-releases')">New Releases</button>
+                    <a href="#" class="btn btn-primary" onclick="showTab('new-releases')">New Arrivals</a>
+                    <a href="#" class="btn btn-secondary" data-category="figures" onclick="filterByCategory('figures')">Action Figures</a>
                 </div>
             </div>
         </section>
@@ -1162,7 +1165,7 @@
     </div>
 </div>
 <script>
-const API_BASE_URL = "https://remix-analysis-disco-first.trycloudflare.com";
+const API_BASE_URL = "https://environments-comfortable-roland-reserved.trycloudflare.com";
 
 // Global variables
 let cart = JSON.parse(localStorage.getItem('mangaPrideCart')) || [];
@@ -1170,82 +1173,6 @@ let allProducts = [];
 
 // Free shipping configuration
 const FREE_SHIPPING_THRESHOLD = 10000000;
-
-// [KEEP ALL YOUR EXISTING FUNCTIONS EXACTLY AS THEY ARE]
-// All your existing cart and product functions remain unchanged
-// [KEEP ALL YOUR EXISTING FUNCTIONS EXACTLY AS THEY ARE]
-// updateFreeShippingProgress, updateCartCount, addToCart, etc.
-// All your existing cart and product functions remain unchanged
-
-// Enhanced error handling for API calls
-async function loadProductsFromAPI() {
-    try {
-        showLoadingState();
-        const apiUrl = `${API_BASE_URL}/api/products`;
-        console.log('🌐 Fetching from:', apiUrl);
-        
-        const response = await fetch(apiUrl, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            mode: 'cors'
-        });
-        
-        console.log('📡 Response status:', response.status);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-        
-        const products = await response.json();
-        console.log('✅ Loaded products from API:', products.length, 'products');
-        allProducts = products;
-        
-        loadHotPicks();
-        loadFeaturedProducts();
-        loadNewReleases();
-        loadBestsellers();
-        
-        return products;
-    } catch (error) {
-        console.error('❌ Error loading products:', error);
-        
-        // Enhanced error diagnostics
-        await testServerConnection();
-        
-        showAlert('Cannot connect to server. Please check if the server is running.', 'error');
-        showErrorState();
-        return [];
-    }
-}
-
-// Enhanced server connectivity test
-async function testServerConnection() {
-    try {
-        console.log('🔍 Testing server connectivity...');
-        const healthResponse = await fetch(`${API_BASE_URL}/api/health`);
-        console.log('🏥 Server health check:', healthResponse.status);
-        
-        if (healthResponse.ok) {
-            const healthData = await healthResponse.json();
-            console.log('💚 Server health data:', healthData);
-        } else {
-            console.error('💔 Server health check failed:', healthResponse.status);
-        }
-    } catch (healthError) {
-        console.error('🔴 Server health check failed completely:', healthError.message);
-        console.log('💡 Tips:');
-        console.log('   - Make sure server is running');
-        console.log('   - Check if port 443 is forwarded');
-        console.log('   - Verify SSL certificates exist');
-        console.log('   - Check firewall settings');
-    }
-}
-
-// [KEEP ALL YOUR OTHER EXISTING FUNCTIONS]
-// showLoadingState, showErrorState, createProductCard, etc.
-// All remaining functions stay exactly as you have them
 
 // Update free shipping progress
 function updateFreeShippingProgress() {
@@ -1761,11 +1688,8 @@ document.addEventListener('DOMContentLoaded', function() {
     loadProductsFromAPI();
 });
 
-// Mobile menu toggle
-document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
-    const navLinks = document.querySelector('.nav-links');
-    navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
-});
-    </script>
+// Mobile menu toggle - removed functionality
+// The mobile menu button and nav links are now hidden on mobile
+</script>
 </body>
 </html>
